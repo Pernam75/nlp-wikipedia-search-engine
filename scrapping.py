@@ -28,15 +28,20 @@ class WikiPage():
     
     def get_links(self) -> list:
         allLinks = self.soup.find(id="bodyContent").find_all("a")
-        # filter out links that don't have the href attribute
-        links = [link for link in allLinks if link.has_attr("href")]
-        # filter out links that have the href attribute but don't start with /wiki/
-        links = [link for link in links if link["href"].find("/wiki/") == 0]
-        # filter out links that are files (end with .jpg, .png, .svg)
-        links = [link for link in links if link["href"].find(".jpg") == -1]
-        links = [link for link in links if link["href"].find(".png") == -1]
-        links = [link for link in links if link["href"].find(".svg") == -1]
-        return [link["href"] for link in links]
+        links = [link["href"] for link in allLinks
+                # check if it has an href attribute
+                if link.has_attr("href") 
+                # check if it is a wikipedia link
+                and link["href"].startswith("/wiki/")
+                # check if it is not a file 
+                and not link["href"].endswith((".jpg", ".png", ".svg"))
+                # check if it is not a special page
+                and "Special:" not in link["href"]
+                # check if it is not a help page
+                and "Help:" not in link["href"] 
+                # check if it is not a wikipedia page
+                and "Wikipedia:" not in link["href"]]
+        return links
     
     # Parser
     def get_h1(self) -> str:
@@ -57,7 +62,6 @@ class WikiPage():
         except Exception as e:
             print(f"Error getting summary for {self.url}: {e}")
             return None
-        
     
     def get_content(self) -> list:
         content = []
