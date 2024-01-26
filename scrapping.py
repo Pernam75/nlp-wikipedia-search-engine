@@ -113,14 +113,17 @@ if __name__ == "__main__":
     # while we don't have 100 links in our dictionary we will continue to loop
     while len(done) < 5000:
         link = fifo_links.pop(0)
-        link_url = "https://en.wikipedia.org" + link
-        if link_url in done:
-            continue
-        page = WikiPage(link_url)
-        page.to_json()
-        done.append(page.url)
-        if len(fifo_links) + len(done) < 5000:
-            # check the length of the total links to make sure we don't have too much links
-            fifo_links = fifo_links + page.links
+        try:
+            link_url = "https://en.wikipedia.org" + link
+            if link_url in done:
+                continue
+            page = WikiPage(link_url)
+            page.to_json()
+            done.append(page.url)
+            if len(fifo_links) + len(done) < 5000:
+                # check the length of the total links to make sure we don't have too much links
+                fifo_links = fifo_links + page.links
+        except Exception as e:
+            print(f"Error getting {link_url}: {e}")
         if len(done) % 50 == 0:
             print(f"Done {len(done)} pages in {round(time.time() - start)} seconds. {len(fifo_links)} links remaining.")
