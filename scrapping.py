@@ -88,29 +88,47 @@ class WikiPage():
             "title": self.title,
             "summary": self.summary,
             "content": self.content,
-            "links": self.links
         }
     
     def to_json(self, filename="data/raw_wiki.json"):
         # add it to the existing file
-        try:
-            with open(filename, "r") as f:
-                data = json.load(f)
-                data.append(self.wiki_page_to_dict())
-        except:
-            data = [self.wiki_page_to_dict()]
+        with open(filename, "r") as f:
+            data = json.load(f)
+            data.append(self.wiki_page_to_dict())
         with open(filename, "w") as f:
             json.dump(data, f, indent=4)
+
+        
+
+    def links_to_json(self, filename="data/links.json"):
+        # add it to the existing file
+        with open(filename, "r") as f:
+            data = json.load(f)
+            data.append({
+                "url": self.url,
+                "links": self.links
+            })
+        with open(filename, "w") as f:
+            json.dump(data, f, indent=4)  
 
 if __name__ == "__main__":
     start = time.time()
     print("Starting scrapping...")
     root_url = "https://en.wikipedia.org/wiki/Python_(programming_language)"
     root_page = WikiPage(root_url)
+    # write the root page to the json file
+    with open("data/raw_wiki.json", "w") as f:
+        json.dump([root_page.wiki_page_to_dict()], f, indent=4)
+    # write the root page links to the json file
+    with open("data/links.json", "w") as f:
+        json.dump([{
+            "url": root_url,
+            "links": root_page.links
+        }], f, indent=4)
     done = [root_url]
     fifo_links = root_page.links
 
-    # while we don't have 100 links in our dictionary we will continue to loop
+    # while we don't have 5000 pages in the json file we continue
     while len(done) < 5000:
         link = fifo_links.pop(0)
         try:
@@ -119,6 +137,7 @@ if __name__ == "__main__":
                 continue
             page = WikiPage(link_url)
             page.to_json()
+            page.links_to_json()
             done.append(page.url)
             if len(fifo_links) + len(done) < 5000:
                 # check the length of the total links to make sure we don't have too much links
