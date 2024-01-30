@@ -9,5 +9,5 @@ __pycache__/
 *.json
 
 # ignore vscode workspace files
-.vscode/
-.code-workspace
+*.vscode/
+*.code-workspace
