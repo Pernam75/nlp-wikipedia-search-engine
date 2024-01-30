@@ -1,0 +1,13 @@
+# ignore notebooks files
+*.ipynb_checkpoints
+*.ipynb
+
+# ignore python cache files
+__pycache__/
+
+# ignore json files (dataset)
+*.json
+
+# ignore vscode workspace files
+*.vscode/
+*.code-workspace
