@@ -44,5 +44,5 @@ if __name__ == '__main__':
     # clean each page
     cleaned_data = [clean_page(page) for page in data]
     # save the cleaned data
-    with open('cleaned_data.json', 'w') as f:
+    with open('data/cleaned_data.json', 'w') as f:
         json.dump(cleaned_data, f, indent=4)
