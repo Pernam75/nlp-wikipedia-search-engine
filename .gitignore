@@ -7,3 +7,7 @@ __pycache__/
 
 # ignore json files (dataset)
 *.json
+
+# ignore vscode workspace files
+.vscode/
+.code-workspace
