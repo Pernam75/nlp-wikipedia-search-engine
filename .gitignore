@@ -1,6 +1,5 @@
 # ignore notebooks files
 *.ipynb_checkpoints
-*.ipynb
 
 # ignore python cache files
 __pycache__/
